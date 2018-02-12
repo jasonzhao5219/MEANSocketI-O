@@ -1,0 +1,59 @@
+<html>
+<head>
+	<title></title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <style type="text/css">
+    	
+    </style>
+    <script type ="text/javascript">
+         $(document).ready(function (){
+            // this triggers the connection event in our server!
+           
+            var name = "";
+           
+             name = prompt('What is your name? ');
+
+            var socket  = io.connect();
+              socket.emit( "a_new_user_login",{name:name});
+              $('#sendbutton').click(function(){
+            
+             //var values = {name:"",location:"",language:"",comment:""};
+             var usermessage = "";
+             usermessage = $("input:first").val();
+              
+              socket.emit( "user_send_message",  {usermessage:usermessage,name:name});
+            });
+             // console.log("123");
+            socket.on( 'username_fromserver', function (data){
+               console.log( 'The server says: '+data.username );
+               $( "textarea" ).append(data.username[data.username.length-1]+" log in !");
+               for (var i=0; i<data.usermessage.length;i++){
+                  $( "textarea" ).append(data.username[i]+" said: "+data.usermessage[i]);
+
+               }
+            });
+            socket.on('messageTwo_fromserver',function(data){
+              $( "textarea" ).append(data.username+" said: "+data.usermessage+" . ");
+            });
+              
+         	});
+    </script>
+</head>
+<body>
+   <div id="wholething">
+     <p>Coversation Board</p>
+     <textarea id="chatboard" ></textarea>
+     <br>
+     <input type="text" name="inputOne">
+     <br>
+     <button id="sendbutton">Send</button>
+   </div>
+</body>
+<style type="text/css">
+  textarea{
+    height :300px;
+    width: 600px; 
+  }
+</style>
+</html>
